@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg bg-success">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">Notebook</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href={% url "notes:home" %}>Home</a>
+        </li>
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href={% url "account:user_profile" request.user.id %}>{{ request.user.username }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href={% url "account:user_logout" %}>Logout</a>
+          </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active text-white" aria-current="page" href={% url "account:user_register" %}>SignUp</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active text-white" aria-current="page" href={% url "account:user_login" %}>Login</a>
+            </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

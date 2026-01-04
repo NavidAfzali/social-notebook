@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action='' method='GET'>
+        {{ form.as_p }}
+        <input type='submit' value='Search'>
+    </form><br>
+    <h1>Last Notes</h1>
+    <div class="card">
+        {% for note in notes %}
+            <div class="card-body">
+                <a href={{ note.get_absolute_url }} class="card-title h4 link-offset-2 link-underline link-underline-opacity-0">{{ note.title }}</a>
+                <p class="card-text">{{ note.body|truncatewords:5 }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+{% endblock content %}

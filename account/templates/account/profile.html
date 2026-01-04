@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% comment %} check if user login {% endcomment %}
+    {% if request.user.id == user.id %}
+        <a href={% url "notes:note_create" %} class="btn btn-primary">New Note</a>
+        <a href={% url "account:edit_user" %} class="btn btn-info">Edit User</a>
+    {% endif %}
+
+
+    {% comment %} check for follow and unfollow botton {% endcomment %}
+    {% if request.user.id != user.id and not is_following %}
+        <a href={% url "account:user_follow" user.id %} class="btn btn-success">Follow</a>
+    {% elif request.user.id != user.id and is_following %}
+        <a href={% url "account:user_unfollow" user.id %} class="btn btn-danger">UnFollow</a>
+    {% endif %}
+
+
+    {% comment %} User details and notes {% endcomment %}
+    <div
+        class="card border-primary text-center col-md-5 position-absolute top-50 start-50 translate-middle"
+    >
+        <div class="card-body">
+            <h2 class="card-title">{{ user.username }}</h2>
+            <h4 class="card-text">Email: {{ user.email }}</h4>
+        </div>
+        <div class="card">
+            {% for note in notes %}
+                <div class="card-body">
+                    <a href={{ note.get_absolute_url }} class="card-title h4 link-offset-2 link-underline link-underline-opacity-0">{{ note.title }}</a>
+                    <p class="card-text">{{ note.body|truncatewords:5 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+{% endblock content %}

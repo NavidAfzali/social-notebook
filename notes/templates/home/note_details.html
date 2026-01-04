@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card text-center">
+        <div class="card-header">
+            By user: <a href={% url "account:user_profile" note.user.pk %}> {{ note.user.username }} </a>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ note.title }}</h5>
+            <p class="card-text">{{ note.body }}</p>
+        </div>
+        {% if request.user.id == note.user.id %}
+            <a href={% url "notes:note_delete" note.id %} class="btn btn-danger">Delete note</a>
+            <br>
+            <a href={% url "notes:note_update" note.id %} class="btn btn-info">Update note</a>
+        {% endif %}
+        <div class="card-footer text-body-secondary">
+            Last update: {{ note.updated|date:"d-M-Y" }}
+        </div>
+        <a href={% url "notes:note_like" note.id %} class='btn btn-primary col-md-2'>Like {{ note.likes_count }}</a>
+    </div>
+    <hr>
+    <p class="h3">Comments</p>
+    {% for comment in comments %}
+    <div class='card bg-dark text-white'>
+        <div class='card-header'>
+            <p class='h5'>{{ comment.user.username }} - {{ comment.created|timesince }} ago</p>
+            <div class='card-body'>
+                <p>
+                    {{ comment.body }}
+                </p>
+                {% if request.user.is_authenticated %}
+
+                    <form action={% url "notes:note_reply" note.id comment.id %} method='POST'>
+                        {% csrf_token %}
+                        {{ reply_form.as_p }}
+                        <input type='submit' value='Send'>
+                    </form>
+                {% endif %}
+                {% with replies=comment.replies.all %}
+                {% for reply in replies %}
+                    <p class='bg-primary p-3 m-3'>{{ reply.user.username }}
+                        <br>
+                        {{ reply.body }}
+                    </p>
+                    
+                {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div><br>
+    {% empty %}
+        <p class='h4'>Be the first comment for this note!</p>
+    {% endfor %}
+
+    <hr>
+    {% if request.user.is_authenticated %}
+        <p class='h5'>Add your comment here.</p>
+        <form action="" method='POST' novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type='submit' value='Send'>
+        </form>
+    {% else %}
+        <p class='alert alert-danger'>Login first and add comment for this note.</p>
+    {% endif %}
+{% endblock content %}
